@@ -205,7 +205,7 @@ if ($_POST) {
                 </nav>
             </header>
             <!--  Header End -->
-            <div class="container-fluid">
+            <div class="container">
         <div class="container-fluid">
         <div class="card-body p-4">
     <h5 class="card-title fw-semibold mb-4">
