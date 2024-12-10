@@ -50,6 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Servicio Adicional</title>
+    <link rel="stylesheet" href="../../assets/css/styles.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -77,14 +79,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border-radius: 5px;
         }
         button {
-            background-color: #28a745;
+            background-color: #007bff;
             color: white;
             padding: 10px 20px;
             border: none;
             cursor: pointer;
         }
         button:hover {
-            background-color: #218838;
+            background-color: #0056b3;
+        }
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        .form-group {
+            width: 100%;
+        }
+        .btn-cancel {
+            background-color: #dc3545;
+        }
+        .btn-cancel:hover {
+            background-color: #c82333;
         }
     </style>
 </head>
@@ -93,16 +108,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <div class="container">
     <h2>Editar Servicio</h2>
     <form method="POST">
-        <label for="nombre">Nombre del Servicio</label>
-        <input type="text" name="nombre" id="nombre" value="<?php echo htmlspecialchars($servicio['nombre']); ?>" required>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="nombre">Nombre del Servicio</label>
+                <input type="text" name="nombre" id="nombre" value="<?php echo htmlspecialchars($servicio['nombre']); ?>" required>
+            </div>
+        </div>
 
-        <label for="descripcion_servicio">Descripción del Servicio</label>
-        <textarea name="descripcion_servicio" id="descripcion_servicio" required><?php echo htmlspecialchars($servicio['descripcion_servicio']); ?></textarea>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="descripcion_servicio">Descripción del Servicio</label>
+                <textarea name="descripcion_servicio" id="descripcion_servicio" required><?php echo htmlspecialchars($servicio['descripcion_servicio']); ?></textarea>
+            </div>
+        </div>
 
-        <label for="costo">Costo del Servicio</label>
-        <input type="number" name="costo" id="costo" step="0.01" value="<?php echo htmlspecialchars($servicio['costo']); ?>" required>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="costo">Costo del Servicio</label>
+                <input type="number" name="costo" id="costo" step="0.01" value="<?php echo htmlspecialchars($servicio['costo']); ?>" required>
+            </div>
+        </div>
 
-        <button type="submit">Actualizar Servicio</button>
+        <div class="form-row">
+            <button type="submit">Actualizar Servicio</button>
+            <button type="button" class="btn-cancel" onclick="window.location.href='index.php'">Cancelar</button>
+        </div>
     </form>
 </div>
 
