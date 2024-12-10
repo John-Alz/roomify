@@ -3,36 +3,32 @@ include("../../conexion.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Recibiendo datos del formulario
-    $nombre = $_POST['nombre'];
-    $descripcion = $_POST['descripcion_servicio'];
-    $costo = $_POST['costo'];
+    $tipo_pago = $_POST['tipo_pago'];
 
     // Preparando la consulta para insertar
-    $sentencia = $conexion->prepare("INSERT INTO servicios_adicionales (nombre, descripcion_servicio, costo) 
-                                     VALUES (:nombre, :descripcion_servicio, :costo)");
+    $sentencia = $conexion->prepare("INSERT INTO metodo_pago (tipo_pago) 
+                                     VALUES (:tipo_pago)");
 
-    $sentencia->bindParam(':nombre', $nombre);
-    $sentencia->bindParam(':descripcion_servicio', $descripcion);
-    $sentencia->bindParam(':costo', $costo);
+    $sentencia->bindParam(':tipo_pago', $tipo_pago);
 
     // Ejecutar la consulta
     if ($sentencia->execute()) {
-        echo "Servicio creado correctamente.";
-        header("Location: index.php"); // Redirigir a index.php después de crear el servicio
+        echo "Método de pago creado correctamente.";
+        header("Location: index.php"); // Redirigir a index.php después de crear el método de pago
         exit(); // Asegura que no se ejecute más código
     } else {
-        echo "Error al crear el servicio.";
+        echo "Error al crear el método de pago.";
     }
 }
 ?>
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Crear Servicio</title>
+    <title>Crear Método de Pago</title>
     <link rel="shortcut icon" type="image/png" href="../../assets/images/logos/favicon.png" />
     <link rel="stylesheet" href="../../assets/css/styles.min.css" />
 </head>
@@ -46,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div>
                 <div class="brand-logo d-flex align-items-center justify-content-between">
                     <a href="./index.html" class="text-nowrap logo-img">
-                        <img src="../../assets/images/logos\roomify-logo.svg" width="180" alt="" />
+                        <img src="../../assets/images/logos/roomify-logo.svg" width="180" alt="" />
                     </a>
                     <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
                         <i class="ti ti-x fs-8"></i>
@@ -122,25 +118,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <!--  Header End -->
             <div class="container-fluid">
                 <div class="card-body p-4">
-                    <h5 class="card-title fw-semibold mb-4">Crear Nuevo Servicio</h5>
+                    <h5 class="card-title fw-semibold mb-4">Crear Nuevo Método de Pago</h5>
                     <form method="POST" class="mt-6">
-                        <div class="mb-3">
-                            <label for="nombre" class="form-label">Nombre del Servicio</label>
-                            <input type="text" class="form-control" id="nombre" name="nombre" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="descripcion_servicio" class="form-label">Descripción del Servicio</label>
-                            <textarea class="form-control" id="descripcion_servicio" name="descripcion_servicio" required></textarea>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="costo" class="form-label">Costo del Servicio</label>
-                            <input type="number" class="form-control" id="costo" name="costo" step="0.01" required>
+                        <div class="d-flex gap-4 mb-3">
+                            <div class="w-50">
+                                <label for="tipo_pago" class="form-label">Tipo de Pago</label>
+                                <select class="form-control" id="tipo_pago" name="tipo_pago" required>
+                                    <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+                                    <option value="Efectivo">Efectivo</option>
+                                    <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                                </select>
+                            </div>
                         </div>
 
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary text-white">Crear Servicio</button>
+                            <button type="submit" class="btn btn-primary text-white">Crear Método de Pago</button>
                             <button type="button" class="btn btn-danger" onclick="window.location.href='index.php';">Cancelar</button>
                         </div>
                     </form>
