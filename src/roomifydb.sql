@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-11-2024 a las 19:49:43
+-- Tiempo de generación: 11-12-2024 a las 02:48:50
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.0.30
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -104,17 +104,17 @@ INSERT INTO `habitaciones` (`id_habitacion`, `tipo_habitacion_id`, `numero_habit
 
 CREATE TABLE `metodo_pago` (
   `id_metodo_pago` int(11) NOT NULL,
-  `tipo_pago` varchar(50) DEFAULT NULL
+  `tipo_pago` varchar(50) DEFAULT NULL,
+  `descripcion_pago` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `metodo_pago`
 --
 
-INSERT INTO `metodo_pago` (`id_metodo_pago`, `tipo_pago`) VALUES
-(1, 'Tarjeta de crédito'),
-(2, 'Efectivo'),
-(3, 'Transferencia bancaria');
+INSERT INTO `metodo_pago` (`id_metodo_pago`, `tipo_pago`, `descripcion_pago`) VALUES
+(1, 'Tarjeta de Crédito', NULL),
+(2, 'Efectivo', NULL);
 
 -- --------------------------------------------------------
 
@@ -238,9 +238,8 @@ CREATE TABLE `servicios_adicionales` (
 --
 
 INSERT INTO `servicios_adicionales` (`id_servicio_adicional`, `descripcion_servicio`, `costo`, `nombre`) VALUES
-(1, 'Desayuno buffet', 20.00, 'Desayuno'),
-(2, 'Acceso al spa', 50.00, 'Spa'),
-(3, 'Transporte aeropuerto', 30.00, 'Transporte');
+(1, 'Desayuno buffet', 200.99, 'Desayuno'),
+(2, 'Acceso al spa', 50.00, 'Spa');
 
 -- --------------------------------------------------------
 
@@ -278,14 +277,6 @@ CREATE TABLE `transacciones` (
   `estado_pago` enum('confirmado','cancelado') DEFAULT NULL,
   `costo_total` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `transacciones`
---
-
-INSERT INTO `transacciones` (`id_pago`, `metodo_pago_id`, `reserva_id`, `fecha_hora_pago`, `estado_pago`, `costo_total`) VALUES
-(1, 1, 1, '2024-10-05 12:00:00', 'confirmado', 170.00),
-(2, 2, 2, '2024-10-06 14:30:00', 'cancelado', 200.00);
 
 -- --------------------------------------------------------
 
@@ -414,6 +405,12 @@ ALTER TABLE `usuarios`
 --
 ALTER TABLE `clientes`
   MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de la tabla `metodo_pago`
+--
+ALTER TABLE `metodo_pago`
+  MODIFY `id_metodo_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Restricciones para tablas volcadas
