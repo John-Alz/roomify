@@ -1,140 +1,141 @@
 <?php
 include("../../conexion.php");
 
+// Verificar si se ha recibido el ID del servicio
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+    $id_servicio_adicional = $_GET['id'];
+
+    // Obtener los detalles del servicio
     $sentencia = $conexion->prepare("SELECT * FROM servicios_adicionales WHERE id_servicio_adicional = :id");
-    $sentencia->bindParam(':id', $id);
+    $sentencia->bindParam(':id', $id_servicio_adicional, PDO::PARAM_INT);
     $sentencia->execute();
     $servicio = $sentencia->fetch(PDO::FETCH_ASSOC);
-
-    if (!$servicio) {
-        echo "Servicio no encontrado.";
-        exit;
-    }
-} else {
-    echo "ID no especificado.";
-    exit;
 }
 
+// Actualizar servicio
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $id_servicio_adicional = $_POST['id_servicio_adicional'];
     $nombre = $_POST['nombre'];
-    $descripcion = $_POST['descripcion_servicio'];
+    $descripcion_servicio = $_POST['descripcion_servicio'];
     $costo = $_POST['costo'];
 
-    // Actualizando el servicio
-    $sentencia = $conexion->prepare("UPDATE servicios_adicionales SET 
-        nombre = :nombre, 
-        descripcion_servicio = :descripcion_servicio, 
-        costo = :costo 
-        WHERE id_servicio_adicional = :id");
-    
-    $sentencia->bindParam(':nombre', $nombre);
-    $sentencia->bindParam(':descripcion_servicio', $descripcion);
-    $sentencia->bindParam(':costo', $costo);
-    $sentencia->bindParam(':id', $id);
+    // Actualizar la base de datos con los nuevos datos
+    $sentencia = $conexion->prepare("UPDATE servicios_adicionales SET nombre = :nombre, descripcion_servicio = :descripcion_servicio, costo = :costo WHERE id_servicio_adicional = :id");
+    $sentencia->bindParam(':id', $id_servicio_adicional, PDO::PARAM_INT);
+    $sentencia->bindParam(':nombre', $nombre, PDO::PARAM_STR);
+    $sentencia->bindParam(':descripcion_servicio', $descripcion_servicio, PDO::PARAM_STR);
+    $sentencia->bindParam(':costo', $costo, PDO::PARAM_STR);
+    $sentencia->execute();
 
-    // Ejecutar la actualización
-    if ($sentencia->execute()) {
-        header("Location: index.php");  // Redirigir al index después de la actualización
-        exit;
-    } else {
-        echo "Error al actualizar el servicio.";
-    }
+    // Redirigir después de la actualización
+    header("Location: index.php");
+    exit;
 }
 ?>
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Editar Servicio Adicional</title>
-    <link rel="stylesheet" href="../../assets/css/styles.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 60%;
-            margin: 50px auto;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .form-row {
-            display: flex;
-            gap: 20px;
-        }
-        .form-group {
-            width: 100%;
-        }
-        .btn-cancel {
-            background-color: #dc3545;
-        }
-        .btn-cancel:hover {
-            background-color: #c82333;
-        }
-    </style>
+    <link rel="shortcut icon" type="image/png" href="../../assets/images/logos/favicon.png" />
+    <link rel="stylesheet" href="../../assets/css/styles.min.css" />
 </head>
+
 <body>
+    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+        data-sidebar-position="fixed" data-header-position="fixed">
+        <aside class="left-sidebar">
+            <div>
+                <div class="brand-logo d-flex align-items-center justify-content-center">
+                    <a href="./index.html" class="text-nowrap logo-img">
+                        <img src="../../assets/images/logos/roomify-logo.svg" width="180" alt="" />
+                    </a>
+                </div>
+                <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+                    <ul id="sidebarnav">
+                        <!-- Menú de navegación -->
+                        <li class="sidebar-item"><a class="sidebar-link" href="../index.html">Dashboard</a></li>
+                        <li class="sidebar-item"><a class="sidebar-link" href="../programas/">Reservas</a></li>
+                        <li class="sidebar-item"><a class="sidebar-link" href="../rooms/index.php">Habitaciones</a></li>
+                        <li class="sidebar-item"><a class="sidebar-link" href="../huespedes/index.php">Huespedes</a></li>
+                        <li class="sidebar-item"><a class="sidebar-link" href="../amenidades.html">Amenidades</a></li>
+                        <li class="sidebar-item"><a class="sidebar-link" href="../promo/index.php">Promociones</a></li>
+                        <li class="sidebar-item"><a class="sidebar-link" href="../usuarios/index.php">Usuarios</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
 
-<div class="container">
-    <h2>Editar Servicio</h2>
-    <form method="POST">
-        <div class="form-row">
-            <div class="form-group">
-                <label for="nombre">Nombre del Servicio</label>
-                <input type="text" name="nombre" id="nombre" value="<?php echo htmlspecialchars($servicio['nombre']); ?>" required>
+        <div class="body-wrapper">
+            <header class="app-header">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="search-bar d-flex align-items-center w-50">
+                        <div class="input-group" style="background-color: #f2f2f2; border-radius: 8px; padding: 4px;">
+                            <span class="input-group-text bg-transparent border-0">
+                                <i class="fas fa-search text-dark"></i>
+                            </span>
+                            <input type="text" class="form-control border-0 bg-transparent text-dark" placeholder="Buscar aquí...">
+                        </div>
+                    </div>
+                    <nav class="navbar navbar-expand-lg navbar-light">
+                        <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+                            <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+                                <div class="actions d-flex align-items-center">
+                                    <a href="#" class="me-3">
+                                        <i class="fas fa-bell fs-4"></i>
+                                    </a>
+                                    <a href="#" class="profile-icon">
+                                        <img src="../../assets/images/logos/Ellipse.png" alt="Perfil" class="rounded-circle" width="40">
+                                    </a>
+                                </div>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </header>
+
+            <div class="container-fluid">
+                <div class="container-content">
+                    <div class="row">
+                        <div class="col-lg-12 d-flex align-items-stretch">
+                            <div class="card w-100">
+                                <div class="card-body py-2">
+                                    <h5 class="card-title fw-semibold mb-4">Editar Servicio Adicional</h5>
+                                    <form method="POST" action="edit.php">
+                                        <input type="hidden" name="id_servicio_adicional" value="<?php echo $servicio['id_servicio_adicional']; ?>">
+
+                                        <div class="mb-3">
+                                            <label for="nombre" class="form-label">Nombre</label>
+                                            <input type="text" class="form-control" id="nombre" name="nombre" value="<?php echo $servicio['nombre']; ?>" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="descripcion_servicio" class="form-label">Descripción</label>
+                                            <textarea class="form-control" id="descripcion_servicio" name="descripcion_servicio" rows="4" required><?php echo $servicio['descripcion_servicio']; ?></textarea>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="costo" class="form-label">Costo</label>
+                                            <input type="number" step="0.01" class="form-control" id="costo" name="costo" value="<?php echo $servicio['costo']; ?>" required>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                        <a href="index.php" class="btn btn-secondary">Cancelar</a>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <label for="descripcion_servicio">Descripción del Servicio</label>
-                <textarea name="descripcion_servicio" id="descripcion_servicio" required><?php echo htmlspecialchars($servicio['descripcion_servicio']); ?></textarea>
-            </div>
-        </div>
-
-        <div class="form-row">
-            <div class="form-group">
-                <label for="costo">Costo del Servicio</label>
-                <input type="number" name="costo" id="costo" step="0.01" value="<?php echo htmlspecialchars($servicio['costo']); ?>" required>
-            </div>
-        </div>
-
-        <div class="form-row">
-            <button type="submit">Actualizar Servicio</button>
-            <button type="button" class="btn-cancel" onclick="window.location.href='index.php'">Cancelar</button>
-        </div>
-    </form>
-</div>
-
+    <script src="../../assets/js/modernize.min.js"></script>
+    <script src="../../assets/js/core.js"></script>
 </body>
+
 </html>
