@@ -1,28 +1,33 @@
 <?php
 include("../../conexion.php");
 
+// Verificar si se ha recibido el ID del tipo de habitación
 if (isset($_GET['id'])) {
-    $id_servicio_adicional = $_GET['id'];
+    $id_tipo_habitacion = $_GET['id'];
 
-    $sentencia = $conexion->prepare("SELECT * FROM servicios_adicionales WHERE id_servicio_adicional = :id");
-    $sentencia->bindParam(':id', $id_servicio_adicional, PDO::PARAM_INT);
+    // Obtener los detalles del tipo de habitación
+    $sentencia = $conexion->prepare("SELECT * FROM tipos_habitacion WHERE id_tipo_habitacion = :id");
+    $sentencia->bindParam(':id', $id_tipo_habitacion, PDO::PARAM_INT);
     $sentencia->execute();
-    $servicio = $sentencia->fetch(PDO::FETCH_ASSOC);
+    $tipo_habitacion = $sentencia->fetch(PDO::FETCH_ASSOC);
 }
 
+// Actualizar tipo de habitación
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id_servicio_adicional = $_POST['id_servicio_adicional'];
-    $nombre = $_POST['nombre'];
-    $descripcion_servicio = $_POST['descripcion_servicio'];
-    $costo = $_POST['costo'];
+    $id_tipo_habitacion = $_POST['id_tipo_habitacion'];
+    $tipo_habitacion_nombre = $_POST['tipo_habitacion'];
+    $num_camas = $_POST['num_camas'];
+    $descripcion_tipo_habitacion = $_POST['descripcion_tipo_habitacion'];
 
-    $sentencia = $conexion->prepare("UPDATE servicios_adicionales SET nombre = :nombre, descripcion_servicio = :descripcion_servicio, costo = :costo WHERE id_servicio_adicional = :id");
-    $sentencia->bindParam(':id', $id_servicio_adicional, PDO::PARAM_INT);
-    $sentencia->bindParam(':nombre', $nombre, PDO::PARAM_STR);
-    $sentencia->bindParam(':descripcion_servicio', $descripcion_servicio, PDO::PARAM_STR);
-    $sentencia->bindParam(':costo', $costo, PDO::PARAM_STR);
+    // Actualizar la base de datos con los nuevos datos
+    $sentencia = $conexion->prepare("UPDATE tipos_habitacion SET tipo_habitacion = :tipo_habitacion, num_camas = :num_camas, descripcion_tipo_habitacion = :descripcion_tipo_habitacion WHERE id_tipo_habitacion = :id");
+    $sentencia->bindParam(':id', $id_tipo_habitacion, PDO::PARAM_INT);
+    $sentencia->bindParam(':tipo_habitacion', $tipo_habitacion_nombre, PDO::PARAM_STR);
+    $sentencia->bindParam(':num_camas', $num_camas, PDO::PARAM_INT);
+    $sentencia->bindParam(':descripcion_tipo_habitacion', $descripcion_tipo_habitacion, PDO::PARAM_STR);
     $sentencia->execute();
 
+    // Redirigir después de la actualización
     header("Location: index.php");
     exit;
 }
@@ -34,13 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Editar Servicio Adicional</title>
+    <title>Editar Tipo de Habitación</title>
     <link rel="shortcut icon" type="image/png" href="../../assets/images/logos/favicon.png" />
     <link rel="stylesheet" href="../../assets/css/styles.min.css" />
 </head>
 
 <body>
-    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
+    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+        data-sidebar-position="fixed" data-header-position="fixed">
         <aside class="left-sidebar">
             <div>
                 <div class="brand-logo d-flex align-items-center justify-content-center">
@@ -50,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
                 <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
                     <ul id="sidebarnav">
+                        <!-- Menú de navegación -->
                         <li class="sidebar-item"><a class="sidebar-link" href="../index.html">Dashboard</a></li>
                         <li class="sidebar-item"><a class="sidebar-link" href="../programas/">Reservas</a></li>
                         <li class="sidebar-item"><a class="sidebar-link" href="../rooms/index.php">Habitaciones</a></li>
@@ -96,28 +103,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <div class="col-lg-12 d-flex align-items-stretch">
                             <div class="card w-100">
                                 <div class="card-body py-2">
-                                    <h5 class="card-title fw-semibold mb-4">Editar Servicio Adicional</h5>
-                                    <form method="POST" action="edit.php">
-                                        <input type="hidden" name="id_servicio_adicional" value="<?php echo $servicio['id_servicio_adicional']; ?>">
+                                    <h5 class="card-title fw-semibold mb-4">Editar Tipo de Habitación</h5>
+                                    <?php if ($tipo_habitacion): ?>
+                                        <form method="POST" action="">
+                                            <input type="hidden" name="id_tipo_habitacion" value="<?php echo $tipo_habitacion['id_tipo_habitacion']; ?>">
 
-                                        <div class="mb-3">
-                                            <label for="nombre" class="form-label">Nombre</label>
-                                            <input type="text" class="form-control" id="nombre" name="nombre" value="<?php echo $servicio['nombre']; ?>" required>
-                                        </div>
+                                            <div class="mb-3">
+                                                <label for="tipo_habitacion" class="form-label">Tipo de Habitación</label>
+                                                <input type="text" class="form-control" id="tipo_habitacion" name="tipo_habitacion" value="<?php echo htmlspecialchars($tipo_habitacion['tipo_habitacion']); ?>" required>
+                                            </div>
 
-                                        <div class="mb-3">
-                                            <label for="descripcion_servicio" class="form-label">Descripción</label>
-                                            <textarea class="form-control" id="descripcion_servicio" name="descripcion_servicio" rows="4" required><?php echo $servicio['descripcion_servicio']; ?></textarea>
-                                        </div>
+                                            <div class="mb-3">
+                                                <label for="num_camas" class="form-label">Número de Camas</label>
+                                                <input type="number" min=1 step=1 class="form-control" id="num_camas" name='num_camas' value="<?php echo htmlspecialchars($tipo_habitacion['num_camas']); ?>" required>
+                                            </div>
 
-                                        <div class="mb-3">
-                                            <label for="costo" class="form-label">Costo</label>
-                                            <input type="number" step="0.01" class="form-control" id="costo" name="costo" value="<?php echo $servicio['costo']; ?>" required>
-                                        </div>
+                                            <div class="mb-3">
+                                                <label for='descripcion_tipo_habitacion' class='form-label'>Descripción</label>
+                                                <textarea class='form-control' id='descripcion_tipo_habitacion' name='descripcion_tipo_habitacion' rows='4' required><?php echo htmlspecialchars($tipo_habitacion['descripcion_tipo_habitacion']); ?></textarea>
+                                            </div>
 
-                                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                                        <a href="index.php" class="btn btn-secondary">Cancelar</a>
-                                    </form>
+                                            <button type='submit' class='btn btn-primary'>Guardar Cambios</button>
+                                            <a href='index.php' class='btn btn-secondary'>Cancelar</a>
+                                        </form>
+                                    <?php else: ?>
+                                        <p>No se encontró el tipo de habitación.</p>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>

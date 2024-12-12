@@ -2,24 +2,20 @@
 include("../../conexion.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Recibiendo datos del formulario
     $nombre = $_POST['nombre'];
     $descripcion = $_POST['descripcion_servicio'];
     $costo = $_POST['costo'];
 
-    // Preparando la consulta para insertar
-    $sentencia = $conexion->prepare("INSERT INTO servicios_adicionales (nombre, descripcion_servicio, costo) 
-                                     VALUES (:nombre, :descripcion_servicio, :costo)");
+    $sentencia = $conexion->prepare("INSERT INTO servicios_adicionales (nombre, descripcion_servicio, costo) VALUES (:nombre, :descripcion_servicio, :costo)");
 
     $sentencia->bindParam(':nombre', $nombre);
     $sentencia->bindParam(':descripcion_servicio', $descripcion);
     $sentencia->bindParam(':costo', $costo);
 
-    // Ejecutar la consulta
     if ($sentencia->execute()) {
         echo "Servicio creado correctamente.";
-        header("Location: index.php"); // Redirigir a index.php después de crear el servicio
-        exit(); // Asegura que no se ejecute más código
+        header("Location: index.php");
+        exit();
     } else {
         echo "Error al crear el servicio.";
     }
@@ -38,10 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 
 <body>
-    <!--  Body Wrapper -->
-    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
-        data-sidebar-position="fixed" data-header-position="fixed">
-        <!-- Sidebar Start -->
+    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
         <aside class="left-sidebar">
             <div>
                 <div class="brand-logo d-flex align-items-center justify-content-between">
@@ -52,7 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <i class="ti ti-x fs-8"></i>
                     </div>
                 </div>
-                <!-- Sidebar navigation-->
                 <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
                     <ul id="sidebarnav">
                         <li class="sidebar-item">
@@ -103,10 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </nav>
             </div>
         </aside>
-        <!--  Sidebar End -->
-        <!--  Main wrapper -->
         <div class="body-wrapper">
-            <!--  Header Start -->
             <header class="app-header">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div class="search-bar d-flex align-items-center w-50">
@@ -119,7 +108,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
                 </div>
             </header>
-            <!--  Header End -->
             <div class="container-fluid">
                 <div class="card-body p-4">
                     <h5 class="card-title fw-semibold mb-4">Crear Nuevo Servicio</h5>
