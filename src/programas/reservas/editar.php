@@ -2,48 +2,67 @@
 
 require("../../conexion.php");
 
-
-
 // Obtener tipos de habitación
 $sentencia = $conexion->prepare("SELECT * FROM tipos_habitacion;");
 $sentencia->execute();
 $resultado_habitaciones = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 
-print_r($_POST);
+if (isset($_GET["txtID"])) {
+    $txtID = (isset($_GET["txtID"])) ? $_GET["txtID"] : "";
+    $sentencia = $conexion->prepare("SELECT r.id_reserva, c.nombre_cliente, r.fecha_reserva, r.estado_reserva, r.descripcion_reserva, r.check_in_reserva, r.check_out_reserva
+            FROM reservas r
+            JOIN clientes c ON c.id_cliente = r.cliente_id
+            WHERE r.id_reserva = :id;;
+");
 
-// Agregar habitación
 
-$id = rand(10,100);
+
+$sentencia->bindParam(":id", $txtID);
+$sentencia->execute();
+
+$registro = $sentencia->fetch(PDO::FETCH_LAZY);
+
+$cliente = $registro["cliente_id"];
+$fecha_reserva = $registro["fecha_reserva"];
+$estado_reserva = $registro["estado_reserva"];
+$descripcion_reserva = $registro["descripcion_reserva"];
+$check_in = $registro["check_in_reserva"];
+$check_out = $registro["check_out_reserva"];
+
+};
+
 
 if ($_POST) {
-    $numeroH = (isset($_POST["nh"])) ? $_POST["nh"] : "";
-    $descrpcionH = (isset($_POST["dh"])) ? $_POST["dh"] : "";
-    $disponibilidadH = (isset($_POST["dsh"])) ? $_POST["dsh"] : "";
-    $capacidadH = (isset($_POST["ch"])) ? $_POST["ch"] : "";
-    $costoH = (isset($_POST["ctoh"])) ? $_POST["ctoh"] : "";
-    $tipoH = (isset($_POST["select"])) ? $_POST["select"] : ""; 
+    $cliente = (isset($_POST["cliente"])) ? $_POST["cliente"] : "";
+    $fecha_reserva = (isset($_POST["fecha_reserva"])) ? $_POST["fecha_reserva"] : "";
+    $estado_reserva = (isset($_POST["estado_reserva"])) ? $_POST["estado_reserva"] : "";
+    $descripcion_reserva = (isset($_POST["descripcion_reserva"])) ? $_POST["descripcion_reserva"] : "";
+    $check_in = (isset($_POST["check_in"])) ? $_POST["check_in"] : "";
+    $check_out = (isset($_POST["check_out"])) ? $_POST["check_out"] : ""; 
 
     // Preparar la sentencia con parámetros dinámicos
-    $sentencia = $conexion->prepare("INSERT INTO habitaciones (id_habitacion, tipo_habitacion_id, numero_habitacion, detalle_habitacion, disponibilidad_habitacion, capacidad_habitacion, costo_habitacion) VALUES ($id, :tipoH, :numeroH, :descrpcionH, :disponibilidadH, :capacidadH, :costoH)");
+    $sentencia = $conexion->prepare("UPDATE reservas SET cliente_id = :cliente, fecha_reserva = :fecha_reserva, estado_reserva = :estado_reserva, descripcion_reserva = :descripcion_reserva, check_in = :check_in , check_out = :check_out WHERE id_reserva = :txtID; ");
 
     // Asignar valores a los parámetros
-    $sentencia->bindParam(':tipoH', $tipoH);
-    $sentencia->bindParam(':numeroH', $numeroH);
-    $sentencia->bindParam(':descrpcionH', $descrpcionH);
-    $sentencia->bindParam(':disponibilidadH', $disponibilidadH);
-    $sentencia->bindParam(':capacidadH', $capacidadH);
-    $sentencia->bindParam(':costoH', $costoH);
+    $sentencia->bindParam(':cliente', $cliente);
+    $sentencia->bindParam(':fecha_reserva', $fecha_reserva);
+    $sentencia->bindParam(':estado_reserva', $estado_reserva);
+    $sentencia->bindParam(':descripcion_reserva', $descripcion_reserva);
+    $sentencia->bindParam(':check_in', $check_in);
+    $sentencia->bindParam(':check_out', $check_out);
+    $sentencia->bindParam(':txtID', $txtID);
 
     // Ejecutar la sentencia
     if ($sentencia->execute()) {
-        echo "Habitación creada correctamente.";
+        echo "Habitación actualizada correctamente.";
         header("Loaction: index.php");
     } else {
-        echo "Error al crear la habitación.";
+        echo "Error en actualizacion de la habitación.";
     }
-}
-?>
 
+}
+
+?>
 
 <!doctype html>
 <html lang="en">
@@ -187,98 +206,70 @@ if ($_POST) {
             <div class="container-fluid">
         <div class="container-fluid">
         <div class="card-body p-4">
-    <h5 class="card-title fw-semibold mb-4">
-        <?php echo isset($habitacion) ? '<h5 class="fw-bold" style="font-size: 2.4rem; position: relative; top: -27px; font-weight: 800;">
-    Editar una habitacion
-</h5>
-' : '<h5 class="fw-bold" style="font-size: 2.4rem; position: relative; top: -27px; font-weight: 800;">
-    Agregar nueva habitacion
-</h5>
-'; ?>
-    </h5>
+                    <h5 class="card-title fw-semibold mb-4">Crear Reserva</h5>
 
-    <!-- Sección de imágenes y botón de agregar imagen -->
-    <div class="mb-4">
-        <div class="d-flex flex-wrap gap-3">
-            <!-- Área de visualización de imágenes -->
-            <div class="d-flex align-items-center gap-3">
-                <img src="../../assets/images/rooms-img/Rectangle 1.png" alt="Imagen Habitación" class="img-fluid rounded" style="width: 150px; height: auto;">
-                <img src="../../assets/images/rooms-img/Rectangle 2.png" alt="Imagen Habitación" class="img-fluid rounded" style="width: 150px; height: auto;">
-                <img src="../../assets/images/rooms-img/Rectangle 3.png" alt="Imagen Habitación" class="img-fluid rounded" style="width: 150px; height: auto;">
-                <img src="../../assets/images/rooms-img/Image input.png" alt="Imagen Habitación" class="img-fluid rounded" style="width: 150px; height: auto;">
+                    <form action="crear.php" method="POST" class="mt-6">
+                        <div class="d-flex gap-4">
+
+                        
+                        <div class="w-50">
+                        <div class="d-flex gap-4 mb-3">
+                            <div class="w-100">
+                                <label for="tp_id" class="form-label">Cliente</label>
+                                <select name="cliente" id="tp_id" class="form-select" required>
+                                    <?php
+                                    // Consulta para obtener los tipos de habitación
+                                    $sentencia = $conexion->query("SELECT * FROM clientes");
+                                    while ($cliente = $sentencia->fetch(PDO::FETCH_ASSOC)) {
+                                        echo "<option value='" . $cliente['id_cliente'] . "'>" . $cliente['nombre_cliente'] . "</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-4 mb-3">
+                            <div class="w-100">
+                                <label for="nombre_promocion" class="form-label">Fecha de reserva</label>
+                                <input type="date" value="<?php echo $fecha_reserva ?>" name="fecha_reserva" id="nombre_promocion" class="form-control"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-4 mb-3">
+                            <div class="w-100">
+                                <label for="descripcion" class="form-label">Estado Reserva</label>
+                                <input type="text" value="<?php echo $estado_reserva ?>"  name="estado_reserva" id="descripcion" class="form-control" required>
+                            </div>
+                        </div>
+                        </div>
+
+                        <div class=" gap-4 mb-3 w-50">
+                            <div >
+                                <label for="fecha_inicio" class="form-label">Descripcion reserva</label>
+                                <textarea name="descripcion_reserva" value="<?php echo $descripcion_reserva ?>"   class="form-control"> </textarea>
+                            </div>
+                            <div>
+                                <label for="fecha_fin" class="form-label">Check-in</label>
+                                <input type="date" value="<?php echo $check_in ?>"  name="check_in" id="fecha_fin" class="form-control" required>
+                            </div>
+                            <div>
+                                <label for="fecha_fin" class="form-label">Check-out</label>
+                                <input type="date" value="<?php echo $check_out ?>"  name="check_out" id="fecha_fin" class="form-control" required>
+                            </div>
+                        </div>
+                        </div>
+
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary text-white">Guardar</button>
+                            <button type="button" class="btn btn-danger">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-
-    <!-- Formulario de Creación o Edición de Habitación -->
-    <form action="index.php" method="POST" enctype="multipart/form-data">
-        <!-- Se agrega un campo oculto para identificar si es creación o edición -->
-        <input type="hidden" name="accion" value="<?php echo isset($habitacion) ? 'editar' : 'crear'; ?>">
-
-        <!-- Si estamos editando, se pasa el id de la habitación -->
-        <input type="hidden" name="id_habitacion" value="<?php echo isset($habitacion) ? $habitacion['id_habitacion'] : ''; ?>">
-
-        <div class="d-flex gap-4 mb-3">
-            <div class="w-50">
-                <label for="numero_habitacion" class="form-label">Número de Habitación</label>
-                <input type="text" class="form-control" id="numero_habitacion" name="numeroH" 
-                value="<?php echo isset($habitacion) ? $habitacion['numero_habitacion'] : ''; ?>" required>
-            </div>
-            <div class="w-50">
-                <label for="estado_reserva" class="form-label">Estado de Reserva</label>
-                <select class="form-select" id="estado_reserva" name="disponibilidadH" required>
-                    <option value="Disponible" <?php echo (isset($habitacion) && $habitacion['estado_reserva'] == 'Disponible') ? 'selected' : ''; ?>>Disponible</option>
-                    <option value="Reservada" <?php echo (isset($habitacion) && $habitacion['estado_reserva'] == 'Reservada') ? 'selected' : ''; ?>>Reservada</option>
-                    <option value="Limpieza" <?php echo (isset($habitacion) && $habitacion['estado_reserva'] == 'Limpieza') ? 'selected' : ''; ?>>Limpieza</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="d-flex gap-4 mb-3">
-            <div class="w-50">
-                <label for="tipo_habitacion" class="form-label">Tipo de Habitación</label>
-                <input type="text" class="form-control" id="tipo_habitacion" name="tipoH" 
-                value="<?php echo isset($habitacion) ? $habitacion['tipo_habitacion'] : ''; ?>" required>
-            </div>
-            <div class="w-50">
-                <label for="capacidad" class="form-label">Capacidad</label>
-                <input type="number" class="form-control" id="capacidad" name="capacidadH" 
-                value="<?php echo isset($habitacion) ? $habitacion['capacidad'] : ''; ?>" required>
-            </div>
-        </div>
-
-        <div class="d-flex gap-4 mb-3">
-            <div class="w-50">
-                <label for="precio_noche" class="form-label">Precio por Noche</label>
-                <input type="number" class="form-control" id="precio_noche" name="costoH" 
-                value="<?php echo isset($habitacion) ? $habitacion['precio_noche'] : ''; ?>" required>
-            </div>
-
-        </div>
-
-        <div class="mb-3">
-            <label for="descripcion_habitacion" class="form-label">Descripción de la Habitación</label>
-            <textarea class="form-control" id="descripcion_habitacion" name="descrpcionH" rows="4" required>
-                <?php echo isset($habitacion) ? $habitacion['descripcion_habitacion'] : ''; ?>
-            </textarea>
-        </div>
-
-        <div class="mb-3">
-            <label for="amenidades" class="form-label">Amenidades</label>
-            <input type="text" class="form-control" id="amenidades" name="amenidades" 
-            value="<?php echo isset($habitacion) ? $habitacion['amenidades'] : ''; ?>" required>
-        </div>
-
-        <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-primary text-white d-flex align-items-center px-3 py-1" style="font-size: 0.85rem;">
-    <i class="fas fa-plus me-2" style="font-size: 0.9rem;"></i> 
-    <?php echo isset($habitacion) ? 'Guardar Cambios' : 'Crear Habitación'; ?>
-</button>
-
-            <button type="button" class="btn btn-danger">Cancelar</button>
-        </div>
-    </form>
-</div>
 
     <script src="../../assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
