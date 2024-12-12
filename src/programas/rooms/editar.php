@@ -1,4 +1,3 @@
-
 <?php
 
 require("../../conexion.php");
@@ -34,12 +33,12 @@ $tipoH = $registro["tipo_habitacion"];
 
 
 if ($_POST) {
-    $numeroH = (isset($_POST["nh"])) ? $_POST["nh"] : "";
-    $descrpcionH = (isset($_POST["dh"])) ? $_POST["dh"] : "";
-    $disponibilidadH = (isset($_POST["dsh"])) ? $_POST["dsh"] : "";
-    $capacidadH = (isset($_POST["ch"])) ? $_POST["ch"] : "";
-    $costoH = (isset($_POST["ctoh"])) ? $_POST["ctoh"] : "";
-    $tipoH = (isset($_POST["select"])) ? $_POST["select"] : ""; 
+    $numeroH = (isset($_POST["numeroH"])) ? $_POST["numeroH"] : "";
+    $descrpcionH = (isset($_POST["descrpcionH"])) ? $_POST["descrpcionH"] : "";
+    $disponibilidadH = (isset($_POST["disponibilidadH"])) ? $_POST["disponibilidadH"] : "";
+    $capacidadH = (isset($_POST["capacidadH"])) ? $_POST["capacidadH"] : "";
+    $costoH = (isset($_POST["costoH"])) ? $_POST["costoH"] : "";
+    $tipoH = (isset($_POST["tipoH"])) ? $_POST["tipoH"] : ""; 
     print_r($_POST);
 
     // Preparar la sentencia con parámetros dinámicos
@@ -57,7 +56,7 @@ if ($_POST) {
     // Ejecutar la sentencia
     if ($sentencia->execute()) {
         echo "Habitación actualizada correctamente.";
-        header("Loaction: index.php");
+        header("Location: ./index.php");
     } else {
         echo "Error en actualizacion de la habitación.";
     }
@@ -65,7 +64,6 @@ if ($_POST) {
 }
 
 ?>
-
 <!doctype html>
 <html lang="en">
 
@@ -229,18 +227,18 @@ if ($_POST) {
     </div>
 
     <!-- Formulario de Creación o Edición de Habitación -->
-    <form action="index.php" method="POST" enctype="multipart/form-data">
+    <form action="editar.php" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="txtID" value="<?php echo isset($txtID) ? $txtID : ''; ?>">
 
     <div class="d-flex gap-4 mb-3">
         <div class="w-50">
             <label for="nh" class="form-label">Número de Habitación</label>
-            <input type="text" class="form-control" id="nh" name="nh" 
+            <input type="text" class="form-control" id="nh" name="numeroH" 
             value="<?php echo isset($numeroH) ? $numeroH : ''; ?>" required>
         </div>
         <div class="w-50">
             <label for="dsh" class="form-label">Estado de Reserva</label>
-            <select class="form-select" id="dsh" name="dsh" required>
+            <select class="form-select" id="dsh" name="disponibilidadH" required>
                 <option value="Disponible" <?php echo (isset($disponibilidadH) && $disponibilidadH == 'Disponible') ? 'selected' : ''; ?>>Disponible</option>
                 <option value="Reservada" <?php echo (isset($disponibilidadH) && $disponibilidadH == 'Reservada') ? 'selected' : ''; ?>>Reservada</option>
                 <option value="Limpieza" <?php echo (isset($disponibilidadH) && $disponibilidadH == 'Limpieza') ? 'selected' : ''; ?>>Limpieza</option>
@@ -249,12 +247,12 @@ if ($_POST) {
     </div>
 
     <div class="d-flex gap-4 mb-3">
-        <div class="w-50">
+    <div class="w-50">
             <label for="select" class="form-label">Tipo de Habitación</label>
-            <select class="form-select" id="select" name="select" required>
+            <select class="form-select" id="select" name="tipoH" required>
                 <?php foreach ($resultado_habitaciones as $habitacion) : ?>
                     <option value="<?php echo $habitacion['id_tipo_habitacion']; ?>" 
-                    <?php echo (isset($tipoH) && $tipoH == $habitacion['tipo_habitacion']) ? 'selected' : ''; ?>>
+                    <?php echo ($tipoH == $habitacion['id_tipo_habitacion']) ? 'selected' : ''; ?>>
                         <?php echo $habitacion['tipo_habitacion']; ?>
                     </option>
                 <?php endforeach; ?>
@@ -262,7 +260,7 @@ if ($_POST) {
         </div>
         <div class="w-50">
             <label for="ch" class="form-label">Capacidad</label>
-            <input type="number" class="form-control" id="ch" name="ch" 
+            <input type="number" class="form-control" id="ch" name="capacidadH" 
             value="<?php echo isset($capacidadH) ? $capacidadH : ''; ?>" required>
         </div>
     </div>
@@ -270,14 +268,14 @@ if ($_POST) {
     <div class="d-flex gap-4 mb-3">
         <div class="w-50">
             <label for="ctoh" class="form-label">Precio por Noche</label>
-            <input type="number" class="form-control" id="ctoh" name="ctoh" 
+            <input type="number" class="form-control" id="ctoh" name="costoH" 
             value="<?php echo isset($costoH) ? $costoH : ''; ?>" required>
         </div>
     </div>
 
     <div class="mb-3">
         <label for="dh" class="form-label">Descripción de la Habitación</label>
-        <textarea class="form-control" id="dh" name="dh" rows="4" required><?php echo isset($descrpcionH) ? $descrpcionH : ''; ?></textarea>
+        <textarea class="form-control" id="dh" name="descrpcionH" rows="4" required><?php echo isset($descrpcionH) ? $descrpcionH : ''; ?></textarea>
     </div>
 
     <div class="d-flex gap-2">
