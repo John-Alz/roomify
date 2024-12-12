@@ -2,10 +2,10 @@
 include("../../conexion.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Recibiendo datos del formulario
+ 
     $tipo_pago = $_POST['tipo_pago'];
 
-    // Preparando la consulta para insertar
+
     $sentencia = $conexion->prepare("INSERT INTO metodo_pago (tipo_pago) 
                                      VALUES (:tipo_pago)");
 

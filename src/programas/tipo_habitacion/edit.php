@@ -1,18 +1,18 @@
 <?php
 include("../../conexion.php");
 
-// Verificar si se ha recibido el ID del tipo de habitación
+
 if (isset($_GET['id'])) {
     $id_tipo_habitacion = $_GET['id'];
 
-    // Obtener los detalles del tipo de habitación
+
     $sentencia = $conexion->prepare("SELECT * FROM tipos_habitacion WHERE id_tipo_habitacion = :id");
     $sentencia->bindParam(':id', $id_tipo_habitacion, PDO::PARAM_INT);
     $sentencia->execute();
     $tipo_habitacion = $sentencia->fetch(PDO::FETCH_ASSOC);
 }
 
-// Actualizar tipo de habitación
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id_tipo_habitacion = $_POST['id_tipo_habitacion'];
     $tipo_habitacion_nombre = $_POST['tipo_habitacion'];
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $sentencia->bindParam(':descripcion_tipo_habitacion', $descripcion_tipo_habitacion, PDO::PARAM_STR);
     $sentencia->execute();
 
-    // Redirigir después de la actualización
+
     header("Location: index.php");
     exit;
 }
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
                 <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
                     <ul id="sidebarnav">
-                        <!-- Menú de navegación -->
+
                         <li class="sidebar-item"><a class="sidebar-link" href="../index.html">Dashboard</a></li>
                         <li class="sidebar-item"><a class="sidebar-link" href="../programas/">Reservas</a></li>
                         <li class="sidebar-item"><a class="sidebar-link" href="../rooms/index.php">Habitaciones</a></li>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-12-2024 a las 02:48:50
+-- Tiempo de generación: 12-12-2024 a las 03:04:47
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -92,9 +92,7 @@ INSERT INTO `habitaciones` (`id_habitacion`, `tipo_habitacion_id`, `numero_habit
 (11, 2, '93631', 'Descripcion de la habitacion #41', '', 31, 100973.00),
 (27, 2, '123451', 'Descripcion de la habitacion #123451', '', 311, 50000.00),
 (33, 3, '87', 'Descripcion de la habitacion #87', '', 2, 587.00),
-(53, 3, '1231', 'Descripcion de la habitacion #123', 'disponible', 2, 100.00),
-(61, 1, '2011', 'Suite de lujo1', '', 22, 12346.00),
-(86, 1, '455555', 'una descripción 455', 'disponible', 355, 444.05);
+(53, 3, '1231', 'Descripcion de la habitacion #123', 'disponible', 2, 100.00);
 
 -- --------------------------------------------------------
 
@@ -137,7 +135,6 @@ CREATE TABLE `promociones` (
 --
 
 INSERT INTO `promociones` (`id_promocion`, `tp_id`, `nombre_promocion`, `descripcion`, `descuento`, `fecha_incio_promocion`, `fecha_fin_promocion`) VALUES
-(1, 1, 'Promo Invierno', 'Descuento en habitación sencilla', 0.1, '2024-11-01', '2024-11-30'),
 (2, 3, 'Fin de Año', 'Descuento especial en suite', 0.2, '2024-12-01', '2024-12-31');
 
 -- --------------------------------------------------------
@@ -238,8 +235,7 @@ CREATE TABLE `servicios_adicionales` (
 --
 
 INSERT INTO `servicios_adicionales` (`id_servicio_adicional`, `descripcion_servicio`, `costo`, `nombre`) VALUES
-(1, 'Desayuno buffet', 200.99, 'Desayuno'),
-(2, 'Acceso al spa', 50.00, 'Spa');
+(1, 'postre', 30.00, 'postre');
 
 -- --------------------------------------------------------
 
@@ -259,8 +255,7 @@ CREATE TABLE `tipos_habitacion` (
 --
 
 INSERT INTO `tipos_habitacion` (`id_tipo_habitacion`, `tipo_habitacion`, `num_camas`, `descripcion_tipo_habitacion`) VALUES
-(1, 'Sencilla', 1, 'Habitación con una cama individual'),
-(2, 'Doble', 2, 'Habitación con una cama doble'),
+(2, 'Doble', 7, 'Habitación con una cama doble'),
 (3, 'Suite', 3, 'Habitación con cama doble y sala de estar');
 
 -- --------------------------------------------------------
@@ -411,6 +406,12 @@ ALTER TABLE `clientes`
 --
 ALTER TABLE `metodo_pago`
   MODIFY `id_metodo_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `servicios_adicionales`
+--
+ALTER TABLE `servicios_adicionales`
+  MODIFY `id_servicio_adicional` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restricciones para tablas volcadas

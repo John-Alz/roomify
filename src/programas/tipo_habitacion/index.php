@@ -1,7 +1,7 @@
 <?php
 include("../../conexion.php");
 
-// Eliminar tipo de habitación
+
 if (isset($_GET["txtID"])) {
     $txtID = (isset($_GET["txtID"])) ? $_GET["txtID"] : "";
     $sentencia = $conexion->prepare("DELETE FROM tipos_habitacion WHERE id_tipo_habitacion = :id");
@@ -11,7 +11,7 @@ if (isset($_GET["txtID"])) {
     exit;
 }
 
-// Obtener todos los tipos de habitación
+
 $sentencia = $conexion->prepare("SELECT id_tipo_habitacion, tipo_habitacion, num_camas, descripcion_tipo_habitacion FROM tipos_habitacion");
 $sentencia->execute();
 $resultado_tipos_habitacion = $sentencia->fetchAll(PDO::FETCH_ASSOC);

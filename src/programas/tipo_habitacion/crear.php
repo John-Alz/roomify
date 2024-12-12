@@ -1,13 +1,13 @@
 <?php
 include("../../conexion.php");
 
-// Procesar el formulario de creación
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $tipo_habitacion = $_POST["tipo_habitacion"];
     $num_camas = $_POST["num_camas"];
     $descripcion_tipo_habitacion = $_POST["descripcion_tipo_habitacion"];
 
-    // Insertar nuevo tipo de habitación en la base de datos
+
     $sentencia = $conexion->prepare("INSERT INTO tipos_habitacion (tipo_habitacion, num_camas, descripcion_tipo_habitacion) VALUES (:tipo_habitacion, :num_camas, :descripcion)");
     $sentencia->bindParam(':tipo_habitacion', $tipo_habitacion);
     $sentencia->bindParam(':num_camas', $num_camas, PDO::PARAM_INT);
@@ -37,12 +37,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
         data-sidebar-position="fixed" data-header-position="fixed">
         <aside class="left-sidebar">
-            <!-- Aquí va el menú lateral como en index.php -->
+
         </aside>
 
         <div class="body-wrapper">
             <header class="app-header">
-                <!-- Aquí va el encabezado como en index.php -->
+
             </header>
 
             <div class="container-fluid">

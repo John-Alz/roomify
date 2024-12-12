@@ -4,7 +4,7 @@ include("../../conexion.php");
 if (isset($_GET['id'])) {
     $id_metodo_pago = $_GET['id'];
 
-    // Obtener los detalles del método de pago
+   
     $sentencia = $conexion->prepare("SELECT * FROM metodo_pago WHERE id_metodo_pago = :id");
     $sentencia->bindParam(':id', $id_metodo_pago, PDO::PARAM_INT);
     $sentencia->execute();
@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id_metodo_pago = $_POST['id_metodo_pago'];
     $tipo_pago = $_POST['tipo_pago'];
 
-    // Actualizar el método de pago
+
     $sentencia = $conexion->prepare("UPDATE metodo_pago SET tipo_pago = :tipo_pago WHERE id_metodo_pago = :id");
     $sentencia->bindParam(':id', $id_metodo_pago, PDO::PARAM_INT);
     $sentencia->bindParam(':tipo_pago', $tipo_pago, PDO::PARAM_STR);

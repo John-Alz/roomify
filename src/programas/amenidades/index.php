@@ -1,7 +1,7 @@
 <?php
 include("../../conexion.php");
 
-// Eliminar servicio
+
 if (isset($_GET["txtID"])) {
     $txtID = (isset($_GET["txtID"])) ? $_GET["txtID"] : "";
     $sentencia = $conexion->prepare("DELETE FROM servicios_adicionales WHERE id_servicio_adicional = :id");
@@ -11,7 +11,7 @@ if (isset($_GET["txtID"])) {
     exit;
 }
 
-// Obtener todos los servicios adicionales
+
 $sentencia = $conexion->prepare("SELECT id_servicio_adicional, descripcion_servicio, costo, nombre FROM servicios_adicionales");
 $sentencia->execute();
 $resultado_servicios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
@@ -40,7 +40,7 @@ $resultado_servicios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
                 </div>
                 <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
                     <ul id="sidebarnav">
-                        <!-- Menú de navegación -->
+                       
                         <li class="sidebar-item"><a class="sidebar-link" href="../index.html">Dashboard</a></li>
                         <li class="sidebar-item"><a class="sidebar-link" href="../programas/">Reservas</a></li>
                         <li class="sidebar-item"><a class="sidebar-link" href="../rooms/index.php">Habitaciones</a></li>
