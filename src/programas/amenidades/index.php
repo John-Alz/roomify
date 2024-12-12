@@ -48,6 +48,8 @@ $resultado_servicios = $sentencia->fetchAll(PDO::FETCH_ASSOC);
                         <li class="sidebar-item"><a class="sidebar-link" href="../amenidades.html">Amenidades</a></li>
                         <li class="sidebar-item"><a class="sidebar-link" href="../promo/index.php">Promociones</a></li>
                         <li class="sidebar-item"><a class="sidebar-link" href="../usuarios/index.php">Usuarios</a></li>
+                        <li class="sidebar-item"><a class="sidebar-link" href="../tipo_habitacion/index.php">Tipo de habitacion</a></li>
+                        <li class="sidebar-item"><a class="sidebar-link" href="../tipo_de_pago/index.php">Metodo de pago</a></li>
                     </ul>
                 </nav>
             </div>

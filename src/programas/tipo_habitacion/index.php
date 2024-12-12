@@ -1,17 +1,20 @@
 <?php
 include("../../conexion.php");
 
+// Eliminar tipo de habitación
 if (isset($_GET["txtID"])) {
     $txtID = (isset($_GET["txtID"])) ? $_GET["txtID"] : "";
-    $sentencia = $conexion->prepare("DELETE FROM metodo_pago WHERE id_metodo_pago = :id");
+    $sentencia = $conexion->prepare("DELETE FROM tipos_habitacion WHERE id_tipo_habitacion = :id");
     $sentencia->bindParam(':id', $txtID, PDO::PARAM_INT);
     $sentencia->execute();
     header("Location:index.php");
+    exit;
 }
 
-$sentencia = $conexion->prepare("SELECT id_metodo_pago, tipo_pago FROM metodo_pago");
+// Obtener todos los tipos de habitación
+$sentencia = $conexion->prepare("SELECT id_tipo_habitacion, tipo_habitacion, num_camas, descripcion_tipo_habitacion FROM tipos_habitacion");
 $sentencia->execute();
-$resultado_metodos = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+$resultado_tipos_habitacion = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!doctype html>
@@ -20,16 +23,14 @@ $resultado_metodos = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Modernize Free</title>
+    <title>Tipos de Habitación</title>
     <link rel="shortcut icon" type="image/png" href="../../assets/images/logos/favicon.png" />
     <link rel="stylesheet" href="../../assets/css/styles.min.css" />
 </head>
 
 <body>
-    <!--  Body Wrapper -->
     <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
         data-sidebar-position="fixed" data-header-position="fixed">
-        <!-- Sidebar Start -->
         <aside class="left-sidebar">
       <!-- Sidebar scroll-->
       <div>
@@ -134,110 +135,69 @@ $resultado_metodos = $sentencia->fetchAll(PDO::FETCH_ASSOC);
       </div>
       <!-- End Sidebar scroll-->
     </aside>
-        <!--  Sidebar End -->
-        <!--  Main wrapper -->
+
         <div class="body-wrapper">
-            <!--  Header Start -->
             <header class="app-header">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-    <div class="search-bar d-flex align-items-center w-50">
-        <div class="input-group" style="background-color: #f2f2f2; border-radius: 8px; padding: 4px;">
-            <span class="input-group-text bg-transparent border-0">
-                <i class="fas fa-search text-dark"></i>
-            </span>
-            <input type="text" class="form-control border-0 bg-transparent text-dark" placeholder="Buscar aquí...">
-        </div>
-    </div>
-                <nav class="navbar navbar-expand-lg navbar-light">
-                    <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
-                        <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
-                             <!-- Barra de búsqueda y acciones -->
-    
-        <div class="actions d-flex align-items-center">
-            <a href="#" class="me-3">
-                <i class="fas fa-bell fs-4"></i>
-            </a>
-            <a href="#" class="profile-icon">
-                <img src="../../assets/images/logos/Ellipse.png" alt="Perfil" class="rounded-circle" width="40">
-            </a>
-        </div>
-    </div>
-                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up"
-                                    aria-labelledby="drop2">
-                                    <div class="message-body">
-                                        <a href="javascript:void(0)"
-                                            class="d-flex align-items-center gap-2 dropdown-item">
-                                            <i class="ti ti-user fs-6"></i>
-                                            <p class="mb-0 fs-3">My Profile</p>
-                                        </a>
-                                        <a href="javascript:void(0)"
-                                            class="d-flex align-items-center gap-2 dropdown-item">
-                                            <i class="ti ti-mail fs-6"></i>
-                                            <p class="mb-0 fs-3">My Account</p>
-                                        </a>
-                                        <a href="javascript:void(0)"
-                                            class="d-flex align-items-center gap-2 dropdown-item">
-                                            <i class="ti ti-list-check fs-6"></i>
-                                            <p class="mb-0 fs-3">My Task</p>
-                                        </a>
-                                        <a href="./authentication-login.html"
-                                            class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="search-bar d-flex align-items-center w-50">
+                        <div class="input-group" style="background-color: #f2f2f2; border-radius: 8px; padding: 4px;">
+                            <span class="input-group-text bg-transparent border-0">
+                                <i class="fas fa-search text-dark"></i>
+                            </span>
+                            <input type="text" class="form-control border-0 bg-transparent text-dark" placeholder="Buscar aquí...">
+                        </div>
                     </div>
-                </nav>
+                    <nav class="navbar navbar-expand-lg navbar-light">
+                        <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+                            <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+                                <div class="actions d-flex align-items-center">
+                                    <a href="#" class="me-3">
+                                        <i class="fas fa-bell fs-4"></i>
+                                    </a>
+                                    <a href="#" class="profile-icon">
+                                        <img src="../../assets/images/logos/Ellipse.png" alt="Perfil" class="rounded-circle" width="40">
+                                    </a>
+                                </div>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
             </header>
-            <!--  Header End -->
+
             <div class="container-fluid">
                 <div class="container-content">
                     <div class="row">
                         <div class="col-lg-12 d-flex align-items-stretch">
                             <div class="card w-100">
                                 <div class="card-body py-2">
-                                    <a class="card-title fw-semibold mb-4">Métodos de Pago</a>
+                                    <h5 class="card-title fw-semibold mb-4">Tipos de Habitación</h5>
+                                    <div class="btn-create">
+                                        <a href="../tipos_habitacion/crear.php" class="btn btn-primary text-white">Crear nuevo tipo de habitación</a>
+                                    </div>
                                     <div class="table-responsive">
-                                        <div class="btn-create">
-                                            <a href="crear.php" class="btn btn-primary text-white">Crear nuevo método de pago</a>
-                                        </div>
-
                                         <table class="table text-nowrap mb-0 align-middle">
                                             <thead class="text-dark fs-4">
                                                 <tr>
-                                                    <th class="border-bottom-0">
-                                                        <h6 class="fw-semibold mb-0">Id</h6>
-                                                    </th>
-                                                    <th class="border-bottom-0">
-                                                        <h6 class="fw-semibold mb-0">Tipo de Pago</h6>
-                                                    </th>
-                                                    <th class="border-bottom-0">
-                                                        <h6 class="fw-semibold mb-0">Acciones</h6>
-                                                    </th>
+                                                    <th class="border-bottom-0">Id</th>
+                                                    <th class="border-bottom-0">Tipo de Habitación</th>
+                                                    <th class="border-bottom-0">Número de Camas</th>
+                                                    <th class="border-bottom-0">Descripción</th>
+                                                    <th class="border-bottom-0">Acciones</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-
-                                                <?php foreach ($resultado_metodos as $key => $value) { ?>
+                                                <?php foreach ($resultado_tipos_habitacion as $value) { ?>
                                                     <tr>
+                                                        <td class="border-bottom-0"><?php echo $value["id_tipo_habitacion"] ?></td>
+                                                        <td class="border-bottom-0"><?php echo $value["tipo_habitacion"] ?></td>
+                                                        <td class="border-bottom-0"><?php echo $value["num_camas"] ?></td>
+                                                        <td class="border-bottom-0"><?php echo $value["descripcion_tipo_habitacion"] ?></td>
                                                         <td class="border-bottom-0">
-                                                            <h6 class="fw-semibold mb-0"><?php echo $value["id_metodo_pago"] ?></h6>
-                                                        </td>
-                                                        <td class="border-bottom-0">
-                                                            <h6 class="fw-semibold mb-1"><?php echo $value["tipo_pago"] ?></h6>
-                                                        </td>
-                                                        <td class="border-bottom-0">
-                                                            <!-- Enlace de edición -->
-                                                            <a href="edit.php?id=<?php echo $value["id_metodo_pago"]; ?>"
-                                                                class="badge bg-warning rounded-3 fw-semibold">Editar</a>
-
-                                                            <!-- Enlace de eliminación -->
-                                                            <a href="index.php?txtID=<?php echo $value["id_metodo_pago"] ?>"
-                                                                class="badge bg-danger rounded-3 fw-semibold">Eliminar</a>
+                                                            <a href="edit.php?id=<?php echo $value["id_tipo_habitacion"]; ?>" class="badge bg-warning rounded-3 fw-semibold">Editar</a>
+                                                            <a href="index.php?txtID=<?php echo $value["id_tipo_habitacion"] ?>" class="badge bg-danger rounded-3 fw-semibold">Eliminar</a>
                                                         </td>
                                                     </tr>
                                                 <?php } ?>
-
                                             </tbody>
                                         </table>
                                     </div>
@@ -248,7 +208,6 @@ $resultado_metodos = $sentencia->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             </div>
         </div>
-        <!-- End Body Wrapper -->
     </div>
 
     <script src="../../assets/js/modernize.min.js"></script>
